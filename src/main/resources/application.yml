@@ -1,0 +1,57 @@
+spring:
+  datasource:
+    url: ${DB_JDBC_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        highlight_sql: true # ?? SQL ??? ??
+    open-in-view: false
+
+external:
+  ai:
+    # AI ??(FastAPI ?)? ?????.
+    base-url: ${AI_URL:http://localhost:8000}
+
+---
+# 1. ?? ?? ?? (?? ?? ? ??)
+spring:
+  config:
+    activate:
+      on-profile: default
+  jpa:
+    hibernate:
+      # ????? ??? ?? ??? DB? ?? ????? update? ?????.
+      ddl-auto: update
+
+---
+# 2. AWS ?? ?? (?? ??)
+spring:
+  config:
+    activate:
+      on-profile: aws
+  jpa:
+    hibernate:
+      # ?? ????? ??? ???? ???? ??? ?? ??? ???.
+      ddl-auto: validate
+
+---
+# 3. ?? ? ? ?? ??? ?? (?? ?? ??? ? ?? ??? ??? ??)
+keys:
+  jwt:
+    # JWT ??? ?? ??? ?? ????? ??? ? 32? ??? ?? ???? ????.
+    secret: ${JWT_SECRET:very_secret_key_random_string_over_32_chars_fitin_project}
+    access-token-validity-in-milliseconds: ${JWT_ACCESS_TOKEN_VALIDITY:3600000}
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:temp_google_id}
+    client-secret: ${GOOGLE_CLIENT_SECRET:temp_google_secret}
+    redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/login/oauth2/code/google}
+  kakao:
+    rest-api-key: ${KAKAO_REST_API_KEY:temp_kakao_key}
+    client-secret: ${KAKAO_CLIENT_SECRET:temp_kakao_secret}
+    redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8080/login/oauth2/code/kakao}
