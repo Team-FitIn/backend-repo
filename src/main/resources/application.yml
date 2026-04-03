@@ -1,50 +1,70 @@
+# 1. 공통 설정 (포트, 인코딩, DB 연결 기초)
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true      # spring.http.encoding.force를 대체하는 최신 설정
+      enabled: true
+
 spring:
+  # 데이터베이스 공통 설정 (환경 변수 사용)
   datasource:
     url: ${DB_JDBC_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  # JPA 공통 설정
   jpa:
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-        highlight_sql: true # ?? SQL ??? ??
+        highlight_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
     open-in-view: false
 
+  # 스웨거(SpringDoc) 한글 및 경로 설정
+  springdoc:
+    default-consume-media-type: application/json;charset=UTF-8
+    default-produce-media-type: application/json;charset=UTF-8
+    swagger-ui:
+      path: /swagger-ui.html
+      disable-swagger-default-url: true
+      display-request-duration: true
+    api-docs:
+      path: /v3/api-docs
+
+# 외부 서비스 연동 (AI 서버 등)
 external:
   ai:
-    # AI ??(FastAPI ?)? ?????.
     base-url: ${AI_URL:http://localhost:8000}
 
 ---
-# 1. ?? ?? ?? (?? ?? ? ??)
+# 2. 로컬 개발 환경 (Local / Default)
 spring:
   config:
     activate:
       on-profile: default
   jpa:
     hibernate:
-      # ????? ??? ?? ??? DB? ?? ????? update? ?????.
-      ddl-auto: update
+      ddl-auto: update # 로컬에서는 엔티티 수정 시 DB 자동 반영
 
 ---
-# 2. AWS ?? ?? (?? ??)
+# 3. 운영 환경 (AWS / Production)
 spring:
   config:
     activate:
       on-profile: aws
   jpa:
     hibernate:
-      # ?? ????? ??? ???? ???? ??? ?? ??? ???.
-      ddl-auto: validate
+      ddl-auto: validate # 운영 서버에서는 테이블 구조 체크만 수행
 
 ---
-# 3. ?? ? ? ?? ??? ?? (?? ?? ??? ? ?? ??? ??? ??)
+# 4. 보안 및 소셜 로그인 설정 (중요 키 관리)
 keys:
   jwt:
-    # JWT ??? ?? ??? ?? ????? ??? ? 32? ??? ?? ???? ????.
     secret: ${JWT_SECRET:very_secret_key_random_string_over_32_chars_fitin_project}
     access-token-validity-in-milliseconds: ${JWT_ACCESS_TOKEN_VALIDITY:3600000}
   google:
