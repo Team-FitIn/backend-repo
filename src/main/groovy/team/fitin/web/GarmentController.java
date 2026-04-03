@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import team.fitin.domain.Garment;
+import team.fitin.dto.GarmentResponseDto;
 import team.fitin.service.GarmentService;
 
 import java.util.List;
@@ -19,13 +20,13 @@ public class GarmentController {
 
     @Operation(summary = "전체 의류 조회", description = "DB에 저장된 모든 무신사 의류 목록을 가져옵니다.")
     @GetMapping
-    public List<Garment> getAllGarments() {
+    public List<GarmentResponseDto> getAllGarments() {
         return garmentService.findAllGarments();
     }
 
     @Operation(summary = "카테고리별 조회", description = "상의(TOP), 하의(BOTTOM) 등 카테고리별로 필터링합니다.")
     @GetMapping("/category/{category}")
-    public List<Garment> getGarmentsByCategory(@PathVariable String category) {
+    public List<GarmentResponseDto> getGarmentsByCategory(@PathVariable String category) {
         return garmentService.findGarmentsByCategory(category);
     }
 }
