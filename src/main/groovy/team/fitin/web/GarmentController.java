@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import team.fitin.domain.Garment;
 import team.fitin.dto.GarmentResponseDto;
 import team.fitin.service.GarmentService;
 
