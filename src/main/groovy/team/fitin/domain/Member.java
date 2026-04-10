@@ -1,9 +1,7 @@
 package team.fitin.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,25 +12,24 @@ import java.util.Collections;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member implements UserDetails { // 시큐리티 인터페이스 추가
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 무분별한 객체 생성 방지
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
-    // --- 보안을 위해 추가된 필드 ---
     @Column(nullable = false, unique = true)
-    private String email; // 로그인 아이디로 사용
+    private String email;
 
     @Column(nullable = false)
-    private String password; // 암호화된 비밀번호 저장
-    // ----------------------------
+    private String password;
 
-    @Column(length = 255)
+    // --- 신체 및 프로필 정보 ---
     private String faceImageUrl;
-
     private Float height;
     private Float weight;
     private Float shoulderWidth;
@@ -41,22 +38,28 @@ public class Member implements UserDetails { // 시큐리티 인터페이스 추
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * 엔티티가 처음 저장될 때 생성 시간을 자동으로 기록합니다.
+     */
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // --- UserDetails 구현 메서드 ---
+    // --- Spring Security UserDetails 구현 메서드 ---
 
+    /**
+     * 계정이 가진 권한 목록을 반환합니다.
+     * 현재는 모든 유저에게 'ROLE_USER' 권한을 기본 부여합니다.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 기본 권한 설정 (일반 유저)
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getUsername() {
-        return this.email; // 시큐리티가 사용자를 식별하는 값으로 email 사용
+        return this.email;
     }
 
     @Override
@@ -65,14 +68,22 @@ public class Member implements UserDetails { // 시큐리티 인터페이스 추
     }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 }
