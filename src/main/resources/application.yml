@@ -22,7 +22,6 @@ spring:
         show_sql: true
         format_sql: true
         highlight_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
     open-in-view: false
 
   # 스웨거(SpringDoc) 한글 및 경로 설정
