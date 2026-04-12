@@ -86,4 +86,14 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    /**
+     * 사용자의 신체 정보를 업데이트합니다.
+     */
+    public void updateBodyInfo(Float height, Float weight, Float shoulderWidth, Float legLength) {
+        this.height = height;
+        this.weight = weight;
+        this.shoulderWidth = shoulderWidth;
+        this.legLength = legLength;
+    }
 }
