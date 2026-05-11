@@ -28,4 +28,10 @@ public class GarmentController {
     public List<GarmentResponseDto> getGarmentsByCategory(@PathVariable String category) {
         return garmentService.findGarmentsByCategory(category);
     }
+
+    @Operation(summary = "브랜드별 조회", description = "특정 브랜드의 의류 목록만 필터링하여 가져옵니다.")
+    @GetMapping("/brand/{brand}")
+    public List<GarmentResponseDto> getGarmentsByBrand(@PathVariable String brand) {
+        return garmentService.findGarmentsByBrand(brand);
+    }
 }
