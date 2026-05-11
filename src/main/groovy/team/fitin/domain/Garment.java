@@ -17,7 +17,7 @@ public class Garment {
     @Column(name = "garment_id")
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 255)
     private String name; // 상품명
 
     private String brand; // 브랜드
@@ -27,9 +27,10 @@ public class Garment {
 
     private String categorySub; // 소분류 (반팔 티셔츠 등)
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, length = 1000)
     private String imageUrl; // 배경 제거된 옷 이미지 URL
 
+    @Column(length = 1000)
     private String originalLink; // 무신사 원본 링크
 
     @Column(nullable = false)

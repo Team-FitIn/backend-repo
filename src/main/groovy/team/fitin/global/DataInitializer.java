@@ -8,9 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import team.fitin.domain.Product;
+import team.fitin.domain.Garment;
 import team.fitin.dto.ProductJsonDto;
-import team.fitin.repository.ProductRepository;
+import team.fitin.repository.GarmentRepository;
 
 import java.io.InputStream;
 import java.util.List;
@@ -20,13 +20,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    private final ProductRepository productRepository;
+    // 1. ProductRepository 대신 GarmentRepository를 주입받습니다.
+    private final GarmentRepository garmentRepository;
     private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // 1. JSON 파일 경로 지정
+        // JSON 파일 경로 지정
         ClassPathResource resource = new ClassPathResource("json/musinsa_tops.json");
 
         if (!resource.exists()) {
@@ -35,21 +36,28 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         try (InputStream inputStream = resource.getInputStream()) {
-            // 2. JSON 파싱
+            // 2. JSON 파싱 (기존 DTO 구조 활용)
             List<ProductJsonDto> dtos = objectMapper.readValue(inputStream, new TypeReference<List<ProductJsonDto>>() {});
 
-            // 3. DB 적재 (중복 제외)
+            // 3. DB 적재 (Garment 테이블 기준 중복 제외)
             for (ProductJsonDto dto : dtos) {
-                if (productRepository.findByName(dto.getName()).isEmpty()) {
-                    Product product = Product.builder()
+                // 이미 DB에 같은 이름의 옷이 있는지 Garment 테이블에서 확인
+                if (garmentRepository.findByName(dto.getName()).isEmpty()) {
+
+                    // 4. ERD 설계에 맞춰 Garment 객체 생성
+                    Garment garment = Garment.builder()
                             .name(dto.getName())
-                            .imgUrl(dto.getImgUrl())
-                            .link(dto.getLink())
+                            .brand("무신사(Musinsa)") // JSON에 브랜드 정보가 없을 경우 기본값 설정
+                            .categoryMain("상의")     // 현재 파일(tops)에 맞춰 기본값 설정
+                            .categorySub("티셔츠")    // 필요 시 상세 분류 로직 추가 가능
+                            .imageUrl(dto.getImgUrl()) // 누끼 이미지 매핑
+                            .originalLink(dto.getLink()) // 무신사 원본 구매 링크 매핑
                             .build();
-                    productRepository.save(product);
+
+                    garmentRepository.save(garment);
                 }
             }
-            log.info("무신사 데이터 {}건이 DB에 적재되었습니다.", dtos.size());
+            log.info("무신사 데이터 {}건이 DB에 정상적으로 적재되었습니다.", dtos.size());
         } catch (Exception e) {
             log.error("데이터 적재 중 오류 발생: ", e);
         }
