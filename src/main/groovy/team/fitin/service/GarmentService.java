@@ -27,4 +27,10 @@ public class GarmentService {
                 .map(GarmentResponseDto::from)
                 .collect(Collectors.toList());
     }
+
+    public List<GarmentResponseDto> findGarmentsByBrand(String brand) {
+        return garmentRepository.findByBrand(brand).stream()
+                .map(GarmentResponseDto::from)
+                .collect(Collectors.toList());
+    }
 }
