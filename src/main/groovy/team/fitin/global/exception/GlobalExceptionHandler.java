@@ -5,17 +5,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException; // 추가
 import team.fitin.dto.ErrorResponse;
 
 @Slf4j
-@RestControllerAdvice // 모든 RestController에서 발생하는 예외를 가로챕니다.
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * 단순 리소스 미발견 처리
+     * 이 부분은 에러 로그를 남기지 않고 404 응답만 보냅니다.
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
     /**
      * RuntimeException 처리
      */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        log.error("RuntimeException 발생: ", e);
+
         ErrorResponse response = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("RUNTIME_ERROR")
@@ -26,10 +38,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 기타 예상치 못한 모든 예외 처리 (500 에러 대응)
+     * 진짜 심각한 에러만 로그로 남깁니다.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        log.error("Unknown Exception 발생: ", e);
 
         ErrorResponse response = ErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
