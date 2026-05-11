@@ -1,11 +1,13 @@
 package team.fitin.global.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import team.fitin.dto.ErrorResponse;
 
+@Slf4j
 @RestControllerAdvice // 모든 RestController에서 발생하는 예외를 가로챕니다.
 public class GlobalExceptionHandler {
 
@@ -28,6 +30,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
+
         ErrorResponse response = ErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("SERVER_ERROR")

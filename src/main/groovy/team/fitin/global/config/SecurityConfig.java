@@ -56,7 +56,8 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/garments/**",
                                 "/login/oauth2/**",
-                                "/oauth2/**"
+                                "/oauth2/**",
+                                "/api/members/**"
                         ).permitAll()
                         // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated()

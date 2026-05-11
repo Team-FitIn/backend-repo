@@ -9,7 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import team.fitin.domain.Garment;
-import team.fitin.dto.ProductJsonDto;
+import team.fitin.dto.GarmentJsonDto;
 import team.fitin.repository.GarmentRepository;
 
 import java.io.InputStream;
@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    // 1. ProductRepository 대신 GarmentRepository를 주입받습니다.
     private final GarmentRepository garmentRepository;
     private final ObjectMapper objectMapper;
 
@@ -37,10 +36,10 @@ public class DataInitializer implements CommandLineRunner {
 
         try (InputStream inputStream = resource.getInputStream()) {
             // 2. JSON 파싱 (기존 DTO 구조 활용)
-            List<ProductJsonDto> dtos = objectMapper.readValue(inputStream, new TypeReference<List<ProductJsonDto>>() {});
+            List<GarmentJsonDto> dtos = objectMapper.readValue(inputStream, new TypeReference<List<GarmentJsonDto>>() {});
 
             // 3. DB 적재 (Garment 테이블 기준 중복 제외)
-            for (ProductJsonDto dto : dtos) {
+            for (GarmentJsonDto dto : dtos) {
                 // 이미 DB에 같은 이름의 옷이 있는지 Garment 테이블에서 확인
                 if (garmentRepository.findByName(dto.getName()).isEmpty()) {
 

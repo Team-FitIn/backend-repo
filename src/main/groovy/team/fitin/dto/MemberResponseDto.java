@@ -1,11 +1,15 @@
 package team.fitin.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import team.fitin.domain.Member;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberResponseDto {
     private String email;
     private Float height;
