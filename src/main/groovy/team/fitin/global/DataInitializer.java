@@ -14,6 +14,7 @@ import team.fitin.repository.GarmentRepository;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -38,12 +39,12 @@ public class DataInitializer implements CommandLineRunner {
             // 2. JSON 파싱 (기존 DTO 구조 활용)
             List<GarmentJsonDto> dtos = objectMapper.readValue(inputStream, new TypeReference<List<GarmentJsonDto>>() {});
 
-            // 3. DB 적재 (Garment 테이블 기준 중복 제외)
+            // 3. DB 적재 및 기존 가짜 데이터 정밀 동기화
             for (GarmentJsonDto dto : dtos) {
-                // 이미 DB에 같은 이름의 옷이 있는지 Garment 테이블에서 확인
-                if (garmentRepository.findByName(dto.getName()).isEmpty()) {
+                Optional<Garment> existingGarment = garmentRepository.findByName(dto.getName());
 
-                    // 4. ERD 설계에 맞춰 Garment 객체 생성
+                if (existingGarment.isEmpty()) {
+                    // [Case 1] DB에 없는 완전히 새로운 옷이라면 새롭게 객체 생성 후 저장
                     Garment garment = Garment.builder()
                             .name(dto.getName())
                             .brand("무신사(Musinsa)") // JSON에 브랜드 정보가 없을 경우 기본값 설정
@@ -54,9 +55,16 @@ public class DataInitializer implements CommandLineRunner {
                             .build();
 
                     garmentRepository.save(garment);
+                } else {
+                    Garment targetGarment = existingGarment.get();
+
+                    if (!targetGarment.getImageUrl().equals(dto.getImgUrl())) {
+                        targetGarment.updateCrawlData(dto.getImgUrl(), dto.getLink());
+                        log.info("🔄 기존 가짜 데이터를 최신 크롤링 주소로 동기화 완료: {}", dto.getName());
+                    }
                 }
             }
-            log.info("무신사 데이터 {}건이 DB에 정상적으로 적재되었습니다.", dtos.size());
+            log.info("무신사 크롤링 데이터 총 {}건이 DB와 100% 정밀 동기화되었습니다.", dtos.size());
         } catch (Exception e) {
             log.error("데이터 적재 중 오류 발생: ", e);
         }

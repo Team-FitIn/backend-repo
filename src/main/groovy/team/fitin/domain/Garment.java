@@ -36,6 +36,13 @@ public class Garment {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+
+    // 기존 데이터를 최신 클롤링 데이터로 변경
+    public void updateCrawlData(String imageUrl, String originalLink) {
+        this.imageUrl = imageUrl;
+        this.originalLink = originalLink;
+    }
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
