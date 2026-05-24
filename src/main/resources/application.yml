@@ -48,7 +48,7 @@ spring:
       on-profile: default
   jpa:
     hibernate:
-      ddl-auto: update # 로컬에서는 엔티티 수정 시 DB 자동 반영
+      ddl-auto: create # 로컬에서는 엔티티 수정 시 DB 자동 반영
 
 ---
 # 3. 운영 환경 (AWS / Production)
