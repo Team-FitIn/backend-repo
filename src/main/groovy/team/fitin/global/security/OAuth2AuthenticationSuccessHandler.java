@@ -3,6 +3,7 @@ package team.fitin.global.security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -22,6 +23,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Value("${frontend.target-url}")
+    private String frontendTargetUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -33,7 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // 2. 프론트엔드(혹은 포스트맨)로 토큰을 전달할 URL 생성
         // 실제 서비스에서는 프론트엔드의 특정 페이지로 토큰을 쿼리 파라미터로 보냅니다.
-        String targetUrl = UriComponentsBuilder.fromUriString("/api/auth/social-success")
+        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/oauth2/redirect")
                 .queryParam("token", token)
                 .build().toUriString();
 
