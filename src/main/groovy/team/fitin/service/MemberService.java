@@ -27,6 +27,7 @@ public class MemberService {
                 requestDto.getLegLength()
         );
     }
+
     /**
      * 이메일로 회원을 조회하여 DTO로 반환합니다.
      */
@@ -35,5 +36,13 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
 
         return MemberResponseDto.from(member);
+    }
+
+    @Transactional
+    public void deleteMember(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+
+        memberRepository.delete(member);
     }
 }
