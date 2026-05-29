@@ -1,6 +1,7 @@
 # 1. 공통 설정 (포트, 인코딩, DB 연결 기초)
 server:
   port: 8080
+  forward-headers-strategy: framework
   servlet:
     encoding:
       charset: UTF-8
@@ -50,6 +51,9 @@ spring:
     hibernate:
       ddl-auto: create # 로컬에서는 엔티티 수정 시 DB 자동 반영
 
+frontend:
+  target-url: "http://localhost:5173/oauth2/redirect"
+
 ---
 # 3. 운영 환경 (AWS / Production)
 spring:
@@ -60,6 +64,9 @@ spring:
     hibernate:
       ddl-auto: validate # 운영 서버에서는 테이블 구조 체크만 수행
 
+frontend:
+  target-url: "https://fitin-app.vercel.app/oauth2/redirect"
+
 ---
 # 4. 보안 및 소셜 로그인 설정 (중요 키 관리)
 keys:
@@ -69,11 +76,11 @@ keys:
   google:
     client-id: ${GOOGLE_CLIENT_ID:temp_google_id}
     client-secret: ${GOOGLE_CLIENT_SECRET:temp_google_secret}
-    redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/login/oauth2/code/google}
+    redirect-uri: "{baseUrl}/login/oauth2/code/google"
   kakao:
     rest-api-key: ${KAKAO_REST_API_KEY:temp_kakao_key}
     client-secret: ${KAKAO_CLIENT_SECRET:temp_kakao_secret}
-    redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8080/login/oauth2/code/kakao}
+    redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
 ---
 # 5. OAuth2 설정
 spring:
@@ -85,6 +92,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
@@ -98,3 +106,9 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+          # 🌟 [업데이트 완료]: 구글 전용 프로바이더 계층 정교하게 추가 완료
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
