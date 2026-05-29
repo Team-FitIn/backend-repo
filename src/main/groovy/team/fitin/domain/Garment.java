@@ -43,6 +43,10 @@ public class Garment {
         this.originalLink = originalLink;
     }
 
+    public String getCategory() {
+        return this.categoryMain;
+    }
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
