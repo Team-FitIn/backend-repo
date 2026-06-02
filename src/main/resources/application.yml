@@ -49,7 +49,7 @@ spring:
       on-profile: default
   jpa:
     hibernate:
-      ddl-auto: create # 로컬에서는 엔티티 수정 시 DB 자동 반영
+      ddl-auto: update # 로컬에서는 엔티티 수정 시 DB 자동 반영
 
 frontend:
   target-url: "http://localhost:5173/oauth2/redirect"
@@ -106,7 +106,6 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
-          # 🌟 [업데이트 완료]: 구글 전용 프로바이더 계층 정교하게 추가 완료
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
             token-uri: https://oauth2.googleapis.com/token
