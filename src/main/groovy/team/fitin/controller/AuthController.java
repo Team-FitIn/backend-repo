@@ -13,6 +13,8 @@ import team.fitin.dto.SignUpRequestDto;
 import team.fitin.service.AuthService;
 import team.fitin.service.MemberService;
 
+import java.util.Map;
+
 /**
  * 인증 및 권한 관련 API를 제공하는 컨트롤러입니다.
  */
@@ -33,8 +35,8 @@ public class AuthController {
 
     @Operation(summary = "로그인", description = "이메일과 비밀번호로 인증 후 JWT 액세스 토큰을 발급합니다.")
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto requestDto) {
-        return authService.login(requestDto);
+    public Map<String, String> login(@RequestBody LoginRequestDto requestDto) {
+        return Map.of("token", authService.login(requestDto));
     }
 
     @Operation(summary = "소셜 및 일반 회원 탈퇴", description = "현재 로그인한 사용자의 토큰을 검증하여 계정 정보와 연관된 피팅 히스토리를 DB에서 완전히 삭제합니다.")
