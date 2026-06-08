@@ -17,4 +17,7 @@ public interface GarmentRepository extends JpaRepository<Garment, Long> {
 
     // 브랜드 이름으로 검색하기
     List<Garment> findByBrand(String brand);
+
+    // 상품명 또는 브랜드에 키워드 포함 여부로 검색 (대소문자 무시)
+    List<Garment> findByNameContainingIgnoreCaseOrBrandContainingIgnoreCase(String name, String brand);
 }
