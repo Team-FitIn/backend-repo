@@ -33,4 +33,10 @@ public class GarmentService {
                 .map(GarmentResponseDto::from)
                 .collect(Collectors.toList());
     }
+
+    public List<GarmentResponseDto> searchGarments(String keyword) {
+        return garmentRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCase(keyword, keyword).stream()
+                .map(GarmentResponseDto::from)
+                .collect(Collectors.toList());
+    }
 }

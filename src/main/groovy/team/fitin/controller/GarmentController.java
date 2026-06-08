@@ -38,4 +38,12 @@ public class GarmentController {
     ) {
         return garmentService.findGarmentsByBrand(brand);
     }
+
+    @Operation(summary = "키워드 의류 검색", description = "상품명 또는 브랜드명에 키워드가 포함된 의류 목록을 반환합니다.")
+    @GetMapping("/search")
+    public List<GarmentResponseDto> searchGarments(
+            @RequestParam("keyword") String keyword
+    ) {
+        return garmentService.searchGarments(keyword);
+    }
 }
