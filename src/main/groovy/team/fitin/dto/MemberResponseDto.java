@@ -11,6 +11,7 @@ import team.fitin.domain.Member;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponseDto {
+    private String name;
     private String email;
     private Float height;
     private Float weight;
@@ -19,6 +20,7 @@ public class MemberResponseDto {
 
     public static MemberResponseDto from(Member member) {
         return MemberResponseDto.builder()
+                .name(member.getName())
                 .email(member.getEmail())
                 .height(member.getHeight())
                 .weight(member.getWeight())
