@@ -35,6 +35,7 @@ public class AuthService {
         Member member = Member.builder()
                 .email(requestDto.getEmail())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
+                .name(requestDto.getName())
                 .height(requestDto.getHeight())
                 .weight(requestDto.getWeight())
                 .build();
