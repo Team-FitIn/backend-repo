@@ -28,6 +28,8 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    private String name;
+
     // --- 신체 및 프로필 정보 ---
     private String faceImageUrl;
     private Float height;
